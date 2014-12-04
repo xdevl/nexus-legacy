@@ -42,6 +42,12 @@
             </intent-filter>
             <meta-data android:name="android.service.wallpaper" android:resource="@xml/nexus" />
         </service>
+        
+        <activity
+            android:label="@string/settings"
+            android:name="com.xdevl.wallpaper.nexus.NexusSettings"
+            android:exported="true">
+        </activity>
 
     </application>
 
