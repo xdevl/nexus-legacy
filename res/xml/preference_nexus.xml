@@ -3,7 +3,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     
     <MultiSelectListPreference
-        android:key="colors"
+        android:key="@string/key_colors"
         android:title="@string/title_colors"
         android:summary="@string/description_colors"
         android:dialogTitle="@string/title_colors"
@@ -11,7 +11,7 @@
         android:entryValues="@array/color_values" />
     
      <ListPreference
-        android:key="background"
+        android:key="@string/key_background"
         android:title="@string/title_background"
         android:summary="@string/description_background"
         android:dialogTitle="@string/title_background"
@@ -19,7 +19,7 @@
         android:entryValues="@array/background_values" />
     
     <Preference
-        android:key="about"
+        android:key="@string/key_about"
         android:title="@string/title_about"
         android:summary="@string/description_about" />   
     

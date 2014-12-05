@@ -41,5 +41,9 @@
     <string name="description_colors">Colors used to render the particules</string>
 	<string name="description_background">Wallpaper displayed in the background</string>
 	<string name="description_about">Information about this software</string>
+	
+	<string name="key_colors">colors</string>
+	<string name="key_background">background</string>
+	<string name="key_about">about</string>
     
 </resources>
