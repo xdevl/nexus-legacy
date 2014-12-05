@@ -28,19 +28,36 @@ import com.xdevl.wallpaper.R;
 import com.xdevl.wallpaper.RenderScriptScene;
 
 import android.app.WallpaperManager;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.renderscript.*;
 import android.renderscript.ProgramStore.BlendDstFunc;
 import android.renderscript.ProgramStore.BlendSrcFunc;
 import android.view.SurfaceHolder;
+import android.webkit.WebStorage.Origin;
 
 import java.util.TimeZone;
 
-class NexusRS extends RenderScriptScene {
+class NexusRS extends RenderScriptScene
+{
+	private static enum Background
+    {
+    	ORIGINAL(R.drawable.original_background),ALTERNATIVE(R.drawable.alternative_background) ;
+    	
+    	int resId ;
+    	
+    	Background(int resId)
+    	{
+    		this.resId=resId ;
+    	}
+    }
+	
     private final BitmapFactory.Options mOptionsARGB = new BitmapFactory.Options();
 
     private ProgramVertexFixedFunction.Constants mPvOrthoAlloc;
@@ -50,6 +67,7 @@ class NexusRS extends RenderScriptScene {
     private float mWorldScaleX;
     private float mWorldScaleY;
     private float mXOffset;
+    private Background mBackground=null ;
     private ScriptC_nexus mScript;
 
     public NexusRS(int width, int height) {
@@ -71,8 +89,17 @@ class NexusRS extends RenderScriptScene {
     }
 
     @Override
-    public void start() {
-        super.start();
+    public void start(Context context) {
+    	SharedPreferences sharedPreferences=PreferenceManager.getDefaultSharedPreferences(context) ;
+    	Background background=Background.valueOf(sharedPreferences.getString(context.getString(R.string.key_background),Background.ORIGINAL.name())) ;
+    	if(mBackground==null || mBackground==background)
+    	{
+	    	Allocation oldBackground=mScript.get_gTBackground() ;
+	    	mScript.set_gTBackground(loadTexture(background.resId)) ;
+	    	if(oldBackground!=null)
+	    		oldBackground.destroy() ;
+    	}
+        super.start(context);
     }
 
     @Override
@@ -86,7 +113,7 @@ class NexusRS extends RenderScriptScene {
         mScript.set_gWorldScaleX(mWorldScaleX);
         mScript.set_gWorldScaleY(mWorldScaleY);
     }
-
+    
     @Override
     protected ScriptC createScript() {
         mScript = new ScriptC_nexus(mRS, mResources, R.raw.nexus);
@@ -96,7 +123,6 @@ class NexusRS extends RenderScriptScene {
         createProgramVertex();
         createState();
 
-        mScript.set_gTBackground(loadTexture(R.drawable.pyramid_background));
         mScript.set_gTPulse(loadTextureARGB(R.drawable.pulse));
         mScript.set_gTGlow(loadTextureARGB(R.drawable.glow));
         mScript.setTimeZone(TimeZone.getDefault().getID());

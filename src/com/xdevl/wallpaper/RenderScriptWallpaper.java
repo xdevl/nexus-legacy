@@ -64,7 +64,7 @@ public abstract class RenderScriptWallpaper<T extends RenderScriptScene> extends
             super.onVisibilityChanged(visible);
             if (mRenderer != null) {
                 if (visible) {
-                    mRenderer.start();
+                    mRenderer.start(RenderScriptWallpaper.this);
                 } else {
                     mRenderer.stop();
                 }
@@ -80,7 +80,7 @@ public abstract class RenderScriptWallpaper<T extends RenderScriptScene> extends
             if (mRenderer == null) {
                 mRenderer = createScene(width, height);
                 mRenderer.init(mRs, getResources(), isPreview());
-                mRenderer.start();
+                mRenderer.start(RenderScriptWallpaper.this);
             } else {
                 mRenderer.resize(width, height);
             }

@@ -17,6 +17,7 @@
 
 package com.xdevl.wallpaper;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.renderscript.RenderScriptGL;
@@ -72,7 +73,7 @@ public abstract class RenderScriptScene {
         mRS.bindRootScript(null);
     }
 
-    public void start() {
+    public void start(Context context) {
         mRS.bindRootScript(mScript);
     }
 
