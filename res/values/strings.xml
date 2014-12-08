@@ -66,5 +66,10 @@
 	<string name="color_hex_white">#ffffff</string>
 	<string name="color_hex_yellow">#ffff00</string>
 
+    <string name="background_name_original">Original</string>
+    <string name="background_name_alternative">Alternative</string>
     
+    <string name="background_value_original">ORIGINAL</string>
+    <string name="background_value_alternative">ALTERNATIVE</string>
+	
 </resources>

@@ -97,7 +97,7 @@ class NexusRS extends RenderScriptScene
     @Override
     public void start(Context context) {
     	SharedPreferences sharedPreferences=PreferenceManager.getDefaultSharedPreferences(context) ;
-    	Background background=Background.valueOf(sharedPreferences.getString(context.getString(R.string.key_background),Background.ORIGINAL.name())) ;
+    	Background background=Background.valueOf(sharedPreferences.getString(context.getString(R.string.key_background),context.getString(R.string.background_value_original))) ;
     	if(mBackground==null || mBackground==background)
     	{
 	    	Allocation oldBackground=mScript.get_gTBackground() ;

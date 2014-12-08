@@ -33,13 +33,13 @@
     </string-array>
     
     <string-array name="background_labels">
-        <item>original</item>
-        <item>alternative</item>
+        <item>@string/background_name_original</item>
+        <item>@string/background_name_alternative</item>
     </string-array>
     
     <string-array name="background_values">
-        <item>ORIGINAL</item>
-        <item>ALTERNATIVE</item>
+        <item>@string/background_value_original</item>
+        <item>@string/background_value_alternative</item>
     </string-array>
     
 </resources>

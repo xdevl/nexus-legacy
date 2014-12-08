@@ -8,7 +8,8 @@
         android:summary="@string/description_colors"
         android:dialogTitle="@string/title_colors"
         android:entries="@array/color_labels"
-        android:entryValues="@array/color_values" />
+        android:entryValues="@array/color_values"
+        android:defaultValue="@array/default_colors" />
     
      <ListPreference
         android:key="@string/key_background"
@@ -16,7 +17,8 @@
         android:summary="@string/description_background"
         android:dialogTitle="@string/title_background"
         android:entries="@array/background_labels"
-        android:entryValues="@array/background_values" />
+        android:entryValues="@array/background_values"
+        android:defaultValue="@string/background_value_original" />
     
     <Preference
         android:key="@string/key_about"
