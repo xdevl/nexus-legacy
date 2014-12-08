@@ -33,6 +33,7 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -42,10 +43,15 @@ import android.renderscript.ProgramStore.BlendSrcFunc;
 import android.view.SurfaceHolder;
 import android.webkit.WebStorage.Origin;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.TimeZone;
 
 class NexusRS extends RenderScriptScene
 {
+	
+	private static final int MAX_COLORS=16 ;
 	private static enum Background
     {
     	ORIGINAL(R.drawable.original_background),ALTERNATIVE(R.drawable.alternative_background) ;
@@ -99,6 +105,21 @@ class NexusRS extends RenderScriptScene
 	    	if(oldBackground!=null)
 	    		oldBackground.destroy() ;
     	}
+    	
+    	Set<String> colors=sharedPreferences.getStringSet(context.getString(R.string.key_colors),
+    			new HashSet<String>(Arrays.asList(context.getResources().getStringArray(R.array.default_colors)))) ;
+    	float colorValues[]=new float[MAX_COLORS*3] ;
+    	int i=0 ;
+    	for(String colorLiteral: colors)
+    	{
+    		int color=Color.parseColor(colorLiteral) ;
+    		colorValues[i++]=Color.red(color)/255f ;
+    		colorValues[i++]=Color.green(color)/255f ;
+    		colorValues[i++]=Color.blue(color)/255f ;
+    	}
+
+    	mScript.set_gColors(colorValues);
+    	mScript.set_gColorNumber(colors.size());
         super.start(context);
     }
 

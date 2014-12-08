@@ -32,6 +32,7 @@
 #define PULSE_EXTRA          1
 #define TRAIL_SIZE           40 // Number of cells in a trail
 #define MAX_DELAY          2000 // Delay between a pulse going offscreen and restarting
+#define MAX_COLORS 			16
 
 typedef struct pulse_s {
     int pulseType;
@@ -57,6 +58,8 @@ float gWorldScaleY;
 float gXOffset;
 int gIsPreview;
 int gMode;
+int gColorNumber ;
+float gColors[MAX_COLORS*3] ;
 
 rs_program_fragment gPFTexture;
 rs_program_store gPSBlend;
@@ -67,22 +70,11 @@ rs_allocation gTPulse;
 rs_allocation gTGlow;
 
 static void setColor(int c) {
-    if (gMode == 1) {
-        // sholes red
-        rsgProgramFragmentConstantColor(gPFTexture, 0.9f, 0.1f, 0.1f, 0.8f);
-    } else if (c == 0) {
-        // red
-        rsgProgramFragmentConstantColor(gPFTexture, 1.0f, 0.0f, 0.0f, 0.8f);
-    } else if (c == 1) {
-        // green
-        rsgProgramFragmentConstantColor(gPFTexture, 0.0f, 0.8f, 0.0f, 0.8f);
-    } else if (c == 2) {
-        // blue
-        rsgProgramFragmentConstantColor(gPFTexture, 0.0f, 0.4f, 0.9f, 0.8f);
-    } else if (c == 3) {
-        // yellow
-        rsgProgramFragmentConstantColor(gPFTexture, 1.0f, 0.8f, 0.0f, 0.8f);
-    }
+	int index=c*3 ;
+	if(gColorNumber==0 || c>=gColorNumber)
+		rsgProgramFragmentConstantColor(gPFTexture,0.0f,0.0f,0.0f,0.8f);
+	else rsgProgramFragmentConstantColor(gPFTexture,gColors[index],gColors[index+1],gColors[index+2],0.8f);
+	
 }
 
 static void initPulse(struct pulse_s * pulse, int pulseType) {
@@ -117,7 +109,7 @@ static void initPulse(struct pulse_s * pulse, int pulseType) {
     }
     pulse->startTime = gNow + rsRand(MAX_DELAY);
 
-    pulse->color = rsRand(4);
+    pulse->color = rsRand(gColorNumber);
 
     pulse->pulseType = pulseType;
     if (pulseType == PULSE_EXTRA) {
@@ -256,7 +248,7 @@ static void drawPulses(pulse_t * pulseSet, int setSize) {
 
 void addTap(int x, int y) {
     int count = 0;
-    int color = rsRand(4);
+    int color = rsRand(gColorNumber);
     float scale = rsRand(0.9f, 1.9f);
     x = (x / PULSE_SIZE) * PULSE_SIZE;
     y = (y / PULSE_SIZE) * PULSE_SIZE;
@@ -284,7 +276,7 @@ void addTap(int x, int y) {
             p->active = 1;
             p->color = color;
             color++;
-            if (color >= 4) {
+            if (color >= gColorNumber) {
                 color = 0;
             }
             p->startTime = gNow;
