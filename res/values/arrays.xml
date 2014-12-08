@@ -2,17 +2,34 @@
 <resources>
     
     <string-array name="color_labels">
-        <item>red</item>
-        <item>green</item>
-        <item>blue</item>
-        <item>yellow</item>
+        <item>@string/color_name_blue</item>
+        <item>@string/color_name_cyan</item>
+        <item>@string/color_name_green</item>
+        <item>@string/color_name_magenta</item>
+        <item>@string/color_name_orange</item>
+        <item>@string/color_name_purple</item>
+        <item>@string/color_name_red</item>
+        <item>@string/color_name_white</item>
+        <item>@string/color_name_yellow</item>
     </string-array>
     
     <string-array name="color_values">
-        <item>ff0000</item>
-        <item>ff00</item>
-        <item>ff</item>
-        <item>ffff</item>
+        <item>@string/color_hex_blue</item>
+        <item>@string/color_hex_cyan</item>
+        <item>@string/color_hex_green</item>
+        <item>@string/color_hex_magenta</item>
+        <item>@string/color_hex_orange</item>
+        <item>@string/color_hex_purple</item>
+        <item>@string/color_hex_red</item>
+        <item>@string/color_hex_white</item>
+        <item>@string/color_hex_yellow</item>
+    </string-array>
+    
+    <string-array name="default_colors">
+        <item>@string/color_hex_blue</item>
+        <item>@string/color_hex_green</item>
+        <item>@string/color_hex_red</item>
+        <item>@string/color_hex_yellow</item>
     </string-array>
     
     <string-array name="background_labels">

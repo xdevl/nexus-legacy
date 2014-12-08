@@ -45,5 +45,26 @@
 	<string name="key_colors">colors</string>
 	<string name="key_background">background</string>
 	<string name="key_about">about</string>
+	
+	<string name="color_name_blue">Blue</string>
+	<string name="color_name_cyan">Cyan</string>
+	<string name="color_name_green">Green</string>
+	<string name="color_name_magenta">Magenta</string>
+	<string name="color_name_orange">Orange</string>
+	<string name="color_name_purple">Purple</string>
+	<string name="color_name_red">Red</string>
+	<string name="color_name_white">White</string>
+	<string name="color_name_yellow">Yellow</string>
+	
+	<string name="color_hex_blue">#0000ff</string>
+	<string name="color_hex_cyan">#00ffff</string>
+	<string name="color_hex_green">#00ff00</string>
+	<string name="color_hex_magenta">#ff00ff</string>
+	<string name="color_hex_orange">#ff9933</string>
+	<string name="color_hex_purple">#9933ff</string>
+	<string name="color_hex_red">#ff0000</string>
+	<string name="color_hex_white">#ffffff</string>
+	<string name="color_hex_yellow">#ffff00</string>
+
     
 </resources>
