@@ -21,14 +21,14 @@
     <!-- General -->
     <skip />
     <!-- Application name -->
-    <string name="wallpapers">Nexus Live Wallpaper</string>
+    <string name="wallpapers">Nexus Legacy</string>
 
     <!-- Wallpapers: -->
     <skip />    
     
 	<!-- Wallpaper showing nexus -->
-    <string name="wallpaper_nexus">Nexus</string>
-    <string name="wallpaper_nexus_author">Google</string>
+    <string name="wallpaper_nexus">Nexus Legacy</string>
+    <string name="wallpaper_nexus_author">XdevL</string>
     <string name="wallpaper_nexus_desc">
         A peek inside the neural network.
     </string>
@@ -78,6 +78,6 @@
         licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">apache 2.0 licence</a>
     </string>
     <string name="nexus_about">Nexus Legacy v1.0</string>
-    <string name="xdevl_about">Copyright &#169; 2014 All rights reserved. xdevl</string>
+    <string name="xdevl_about">Copyright &#169; 2014 All rights reserved. XdevL</string>
     
 </resources>
