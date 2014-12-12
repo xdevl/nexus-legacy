@@ -1,45 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:layout_marginLeft="@dimen/fragment_horizontal_margin"
-    android:layout_marginRight="@dimen/fragment_horizontal_margin"
-    android:layout_marginTop="@dimen/fragment_vertical_margin"
-    android:layout_marginBottom="@dimen/fragment_vertical_margin">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/scrollView1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/aosp_about"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:text="@string/aosp_about"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:gravity="center" />
-    
-    <TextView
-        android:id="@+id/nexus_about"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/aosp_about"
-        android:layout_centerHorizontal="true"
-        android:text="@string/nexus_about"
-        android:textStyle="bold"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:gravity="center"
-        android:layout_marginTop="30dip"
-        android:layout_marginBottom="30dip" />
-    
-	<TextView
-        android:id="@+id/xdevl_about"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/nexus_about"
-        android:layout_centerHorizontal="true"
-        android:text="@string/xdevl_about"
-        android:textStyle="italic"
-        android:gravity="center"
-        android:layout_marginTop="10dip" />
+	<RelativeLayout 
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_gravity="center"
+	    android:layout_marginLeft="@dimen/fragment_horizontal_margin"
+	    android:layout_marginRight="@dimen/fragment_horizontal_margin"
+	    android:layout_marginTop="@dimen/fragment_vertical_margin"
+	    android:layout_marginBottom="@dimen/fragment_vertical_margin">
+	
+	    <TextView
+	        android:id="@+id/aosp_about"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentTop="true"
+	        android:layout_centerHorizontal="true"
+	        android:text="@string/aosp_about"
+	        android:gravity="center"
+	        android:layout_marginBottom="30dip" />
+	    
+	    <ImageView
+	        android:id="@+id/nexus_legacy_logo"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_below="@+id/aosp_about"
+	        android:layout_centerHorizontal="true"
+	        android:src="@drawable/ic_launcher_wallpaper"
+	        android:layout_marginBottom="10dip" />
+	    
+	    <TextView
+	        android:id="@+id/nexus_about"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_below="@+id/nexus_legacy_logo"
+	        android:layout_centerHorizontal="true"
+	        android:text="@string/nexus_about"
+	        android:textStyle="bold"
+	        android:textAppearance="?android:attr/textAppearanceLarge"
+	        android:gravity="center"
+	        android:layout_marginBottom="30dip" />
+	    
+	    <TextView
+	        android:id="@+id/xdevl_about"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_below="@+id/nexus_about"
+	        android:layout_centerHorizontal="true"
+	        android:text="@string/xdevl_about"
+	        android:textStyle="italic"
+	        android:gravity="center"
+	        android:layout_marginTop="10dip" />
+	
+	</RelativeLayout>
 
-</RelativeLayout>
+</ScrollView>
