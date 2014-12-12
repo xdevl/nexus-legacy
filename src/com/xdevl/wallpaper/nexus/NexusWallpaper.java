@@ -16,11 +16,10 @@
 
 package com.xdevl.wallpaper.nexus;
 
-import com.xdevl.wallpaper.RenderScriptScene;
 import com.xdevl.wallpaper.RenderScriptWallpaper;
 
-public class NexusWallpaper extends RenderScriptWallpaper {
-    protected RenderScriptScene createScene(int width, int height) {
+public class NexusWallpaper extends RenderScriptWallpaper<NexusRS> {
+    protected NexusRS createScene(int width, int height) {
         return new NexusRS(width, height);
     }
 }

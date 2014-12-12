@@ -16,13 +16,7 @@
 
 package com.xdevl.wallpaper.nexus;
 
-import static android.renderscript.Element.RGBA_8888;
-import static android.renderscript.Element.RGB_565;
 import static android.renderscript.ProgramStore.DepthFunc.ALWAYS;
-import static android.renderscript.Sampler.Value.LINEAR;
-import static android.renderscript.Sampler.Value.CLAMP;
-import static android.renderscript.Sampler.Value.WRAP;
-
 import com.xdevl.wallpaper.nexus.ScriptC_nexus;
 import com.xdevl.wallpaper.RenderScriptScene;
 
@@ -33,15 +27,11 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.renderscript.*;
 import android.renderscript.ProgramStore.BlendDstFunc;
 import android.renderscript.ProgramStore.BlendSrcFunc;
-import android.view.SurfaceHolder;
-import android.webkit.WebStorage.Origin;
-
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;

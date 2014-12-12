@@ -21,7 +21,6 @@ import android.os.Bundle;
 import android.renderscript.RenderScript;
 import android.renderscript.RenderScriptGL;
 import android.view.SurfaceHolder;
-import android.view.Surface;
 
 public abstract class RenderScriptWallpaper<T extends RenderScriptScene> extends WallpaperService {
     public Engine onCreateEngine() {
