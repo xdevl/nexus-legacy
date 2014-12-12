@@ -1,7 +1,5 @@
 package com.xdevl.wallpaper.nexus;
 
-import com.xdevl.wallpaper.R;
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;

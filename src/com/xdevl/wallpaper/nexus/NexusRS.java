@@ -24,7 +24,6 @@ import static android.renderscript.Sampler.Value.CLAMP;
 import static android.renderscript.Sampler.Value.WRAP;
 
 import com.xdevl.wallpaper.nexus.ScriptC_nexus;
-import com.xdevl.wallpaper.R;
 import com.xdevl.wallpaper.RenderScriptScene;
 
 import android.app.WallpaperManager;

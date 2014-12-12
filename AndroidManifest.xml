@@ -19,11 +19,10 @@
 -->
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.xdevl.wallpaper"
+    package="com.xdevl.wallpaper.nexus"
     android:versionCode="1"
     android:versionName="1.0">
 
-    <original-package android:name="com.xdevl.wallpaper" />
 	
     <uses-sdk android:minSdkVersion="14"
         android:targetSdkVersion="17" />
