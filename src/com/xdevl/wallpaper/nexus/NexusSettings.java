@@ -8,9 +8,11 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 public class NexusSettings extends Activity
 {
@@ -40,7 +42,9 @@ public class NexusSettings extends Activity
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 		{
-			return inflater.inflate(R.layout.fragment_about,container,false) ;
+			View root=inflater.inflate(R.layout.fragment_about,container,false) ;
+			((TextView)root.findViewById(R.id.aosp_about)).setMovementMethod(LinkMovementMethod.getInstance()) ;
+			return root ;
 		}
 	}
 	

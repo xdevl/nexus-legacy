@@ -74,7 +74,8 @@
     
     <string name="aosp_about">
         This application is based on the original Nexus live wallpaper source code from 
-        the Android Open Source Project licensed under the apache 2.0 licence
+        the <a href="https://source.android.com/">Android Open Source Project</a>
+        licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">apache 2.0 licence</a>
     </string>
     <string name="nexus_about">Nexus Legacy v1.0</string>
     <string name="xdevl_about">Copyright &#169; 2014 All rights reserved. xdevl</string>
