@@ -83,8 +83,8 @@ class NexusRS extends RenderScriptScene
         mScript.set_gXOffset(xOffset);
     }
 
-    @Override
-    public void start(Context context) {
+    public void update(Context context)
+    {
     	SharedPreferences sharedPreferences=PreferenceManager.getDefaultSharedPreferences(context) ;
     	Background background=Background.valueOf(sharedPreferences.getString(context.getString(R.string.key_background),context.getString(R.string.background_value_original))) ;
     	if(mBackground==null || mBackground==background)
@@ -109,6 +109,11 @@ class NexusRS extends RenderScriptScene
 
     	mScript.set_gColors(colorValues);
     	mScript.set_gColorNumber(colors.size());
+    }
+    
+    @Override
+    public void start(Context context) {
+    	update(context) ;
         super.start(context);
     }
 
@@ -128,11 +133,13 @@ class NexusRS extends RenderScriptScene
     protected ScriptC createScript() {
         mScript = new ScriptC_nexus(mRS, mResources, R.raw.nexus);
 
+        
         createProgramFragmentStore();
         createProgramFragment();
         createProgramVertex();
         createState();
 
+        update(mRS.getApplicationContext());
         mScript.set_gTPulse(loadTextureARGB(R.drawable.pulse));
         mScript.set_gTGlow(loadTextureARGB(R.drawable.glow));
         mScript.setTimeZone(TimeZone.getDefault().getID());
