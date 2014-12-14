@@ -38,7 +38,7 @@
     <string name="title_background">Background</string>
     <string name="title_about">About</string>
     
-    <string name="description_colors">Colors used to render the particules</string>
+    <string name="description_colors">Colors used to render the particles</string>
 	<string name="description_background">Wallpaper displayed in the background</string>
 	<string name="description_about">Information about this software</string>
 	
@@ -56,15 +56,15 @@
 	<string name="color_name_white">White</string>
 	<string name="color_name_yellow">Yellow</string>
 	
-	<string name="color_hex_blue">#0000ff</string>
+	<string name="color_hex_blue">#0066e6</string>
 	<string name="color_hex_cyan">#00ffff</string>
-	<string name="color_hex_green">#00ff00</string>
+	<string name="color_hex_green">#00cc00</string>
 	<string name="color_hex_magenta">#ff00ff</string>
 	<string name="color_hex_orange">#ff9933</string>
 	<string name="color_hex_purple">#9933ff</string>
 	<string name="color_hex_red">#ff0000</string>
 	<string name="color_hex_white">#ffffff</string>
-	<string name="color_hex_yellow">#ffff00</string>
+	<string name="color_hex_yellow">#ffcc00</string>
 
     <string name="background_name_original">Original</string>
     <string name="background_name_alternative">Alternative</string>
