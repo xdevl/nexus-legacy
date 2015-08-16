@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/scrollView1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+	<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_gravity="center"
+	    android:layout_marginLeft="@dimen/fragment_horizontal_margin"
+	    android:layout_marginRight="@dimen/fragment_horizontal_margin"
+	    android:layout_marginTop="@dimen/fragment_vertical_margin"
+	    android:layout_marginBottom="@dimen/fragment_vertical_margin">
+	
+	    <TextView
+	        android:id="@+id/aosp_about"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentTop="true"
+	        android:layout_centerHorizontal="true"
+	        android:text="@string/aosp_about"
+	        android:gravity="center"
+	        android:layout_marginBottom="30dip" />
+	    
+	    <LinearLayout
+	        android:id="@+id/nexus_layout"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_centerHorizontal="true"
+	        android:layout_below="@+id/aosp_about"
+	        android:layout_marginBottom="30dip">
+	        
+	        <ImageView
+		        android:id="@+id/nexus_legacy_logo"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_gravity="center"
+		        android:src="@drawable/ic_launcher_wallpaper" />
+	        
+	        <TextView
+		        android:id="@+id/nexus_about"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_gravity="center"
+		        android:text="@string/nexus_about"
+		        android:textStyle="bold"
+		        android:textAppearance="?android:attr/textAppearanceLarge"
+		        android:gravity="center"
+		        android:layout_marginLeft="10dip" />
+	        
+	    </LinearLayout>
+	    
+	    <TextView
+	        android:id="@+id/xdevl_about"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_below="@+id/nexus_layout"
+	        android:layout_centerHorizontal="true"
+	        android:text="@string/xdevl_about"
+	        android:textStyle="italic"
+	        android:gravity="center"
+	        android:layout_marginTop="10dip" />
+	
+	</RelativeLayout>
+
+</ScrollView>
