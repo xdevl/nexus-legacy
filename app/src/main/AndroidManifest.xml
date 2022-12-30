@@ -22,10 +22,6 @@
     package="com.xdevl.wallpaper.nexus"
     android:versionCode="1"
     android:versionName="1.0">
-
-	
-    <uses-sdk android:minSdkVersion="11"
-        android:targetSdkVersion="21" />
     
     <uses-feature android:name="android.software.live_wallpaper" />
 
@@ -37,7 +33,7 @@
             android:label="@string/wallpaper_nexus"
             android:name="com.xdevl.wallpaper.nexus.NexusWallpaper"
             android:permission="android.permission.BIND_WALLPAPER"
-            android:enabled="true">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.service.wallpaper.WallpaperService" />
             </intent-filter>
