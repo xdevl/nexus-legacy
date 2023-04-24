@@ -48,7 +48,7 @@ class NexusModelTest {
 
     @Test
     fun testAllPulseAreVisible() {
-        val model = NexusModel(1000, 400)
+        val model = NexusModel(1000, 400, emptyList())
         val existingPulses = model.pulses.toSet()
 
         model.update(10)
@@ -58,7 +58,7 @@ class NexusModelTest {
 
     @Test
     fun testLeftToRightPulse() {
-        val model = NexusModel(1000, 400)
+        val model = NexusModel(1000, 400, emptyList())
         val pulse = Pulse(400, 600, 0xFF00FF, 1f, Rotation(0f)).apply {
             setPosition(model.rect.left - width + 1, 0f)
         }
@@ -76,7 +76,7 @@ class NexusModelTest {
 
     @Test
     fun testRightToLeftPulse() {
-        val model = NexusModel(1000, 400)
+        val model = NexusModel(1000, 400, emptyList())
         val pulse = Pulse(400, 600, 0xFF00FF, 1f, Rotation(180f)).apply {
             setPosition(model.rect.right - 1, 0f)
         }
@@ -94,7 +94,7 @@ class NexusModelTest {
 
     @Test
     fun testTopToBottomPulse() {
-        val model = NexusModel(1000, 400)
+        val model = NexusModel(1000, 400, emptyList())
         val pulse = Pulse(400, 600, 0xFF00FF, 1f, Rotation(90f)).apply {
             setPosition(0f, model.rect.top - width + 1)
         }
@@ -113,7 +113,7 @@ class NexusModelTest {
 
     @Test
     fun testBottomToTopPulse() {
-        val model = NexusModel(1000, 400)
+        val model = NexusModel(1000, 400, emptyList())
         val pulse = Pulse(400, 600, 0xFF00FF, 1f, Rotation(270f)).apply {
             setPosition(0f, model.rect.bottom - 1)
         }
@@ -129,7 +129,7 @@ class NexusModelTest {
         assertThat(model.pulses[0]).isNotSameInstanceAs(pulse)
     }
 
-    fun Pulse.assertPulsePosition(x: Float, y: Float) {
+    private fun Pulse.assertPulsePosition(x: Float, y: Float) {
         // TODO: round to first decimal here rather than truncating to Int
         assertThat(rect.left.roundToInt()).isEqualTo(x.roundToInt())
         assertThat(rect.top.roundToInt()).isEqualTo(y.roundToInt())

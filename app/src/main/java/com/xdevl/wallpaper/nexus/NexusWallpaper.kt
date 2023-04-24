@@ -16,26 +16,39 @@
  */
 package com.xdevl.wallpaper.nexus
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.LinearGradient
 import android.graphics.Paint
 import android.graphics.RadialGradient
+import android.graphics.Rect
 import android.graphics.Shader
 import android.service.wallpaper.WallpaperService
 import android.util.SizeF
 import android.view.SurfaceHolder
+import androidx.preference.PreferenceManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import timber.log.Timber
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 class NexusWallpaper : WallpaperService() {
 
+    enum class Background(val resId: Int) {
+        ORIGINAL(R.drawable.original_background), ALTERNATIVE(R.drawable.alternative_background)
+    }
+
     private val refreshRateMillis = 40L
     private lateinit var model: NexusModel
+    private lateinit var holder: SurfaceHolder
+    private lateinit var background: Bitmap
 
     @Override
     override fun onCreateEngine(): Engine = object : Engine() {
@@ -43,30 +56,58 @@ class NexusWallpaper : WallpaperService() {
         lateinit var renderingScope: CoroutineScope
 
         override fun onCreate(surfaceHolder: SurfaceHolder) {
+            Timber.d("onCreate()")
+            val preferences = PreferenceManager.getDefaultSharedPreferences(this@NexusWallpaper)
+            background = Background.valueOf(preferences.getString(getString(R.string.key_background), getString(R.string.background_value_original))!!).let {
+                BitmapFactory.decodeResource(resources, it.resId)
+            }
+
+            val colors = (preferences.getStringSet(getString(R.string.key_colors), null) ?: setOf(*resources.getStringArray(R.array.default_colors))).map {
+                Color.parseColor(it).withAlpha(0x88)
+            }
+
+            model = NexusModel(0, 0, colors)
+
             surfaceHolder.setSizeFromLayout()
+            holder = surfaceHolder
         }
 
         override fun onDestroy() {
-            super.onDestroy()
+            Timber.d("onDestroy()")
             renderingScope.cancel()
         }
 
-        override fun onSurfaceCreated(holder: SurfaceHolder) {
-            model = NexusModel(holder.surfaceFrame.width(), holder.surfaceFrame.height())
-            renderingScope = CoroutineScope(Dispatchers.Default).apply {
-                launch {
-                    while (isActive) {
-                        renderFrame(holder)
-                        delay(refreshRateMillis)
+        override fun onVisibilityChanged(visible: Boolean) {
+            Timber.d("onVisibilityChanged(visible = $visible)")
+            if (visible) {
+                renderingScope = CoroutineScope(Dispatchers.Default).apply {
+                    launch {
+                        while (isActive) {
+                            renderFrame(holder)
+                            delay(refreshRateMillis)
+                        }
                     }
                 }
+            } else {
+                renderingScope.cancel()
             }
+        }
+
+        override fun onSurfaceChanged(holder: SurfaceHolder?, format: Int, width: Int, height: Int) {
+            Timber.d("onSurfaceChanged(format = $format, width = $width, height = $height)")
+            model.width = width
+            model.height = height
+        }
+
+        override fun onOffsetsChanged(xOffset: Float, yOffset: Float, xOffsetStep: Float, yOffsetStep: Float, xPixelOffset: Int, yPixelOffset: Int) {
+            Timber.d("onOffsetsChanged(xOffset = $xOffset, yOffset = $yOffset, xOffsetStep = $xOffsetStep, yOffsetStep = $yOffsetStep, xPixelOffset = $xPixelOffset, yPixelOffset = $yPixelOffset)")
         }
     }
 
     private fun renderFrame(surfaceHolder: SurfaceHolder) {
         surfaceHolder.lockCanvas().apply {
-            drawColor(Color.BLACK)
+            drawBitmap(background, Rect(0, 0, background.width, background.height), Rect(0, 0, width, height), null)
+
             model.update(refreshRateMillis)
 
             model.pulses.forEach {
@@ -88,12 +129,13 @@ class NexusWallpaper : WallpaperService() {
 
     private fun Canvas.drawParticle(x: Float, y: Float, size: SizeF, color: Int) {
         val glowRadius = size.height / 2
-        val traceHeight = size.height * 0.25f
+        // We want the trace to fill the scaled down version of the inner square of the glow
+        val traceHeight = sqrt((glowRadius * 2).pow(2f) / 2f) * 0.50f
 
         drawLinearGradient(
             x,
             y + glowRadius - traceHeight / 2,
-            SizeF(size.width - glowRadius, traceHeight),
+            SizeF(size.width - (glowRadius - traceHeight / 2), traceHeight),
             color
         )
 
@@ -123,6 +165,8 @@ class NexusWallpaper : WallpaperService() {
             )
         })
     }
+
+    private fun Int.withAlpha(alpha: Int): Int = and(0xFFFFFF).or(alpha.shl(24))
 }
 
 

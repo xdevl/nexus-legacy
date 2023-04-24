@@ -66,9 +66,9 @@ data class Pulse(val width: Int, val height: Int, val color: Int, val speed: Flo
     }
 }
 
-class NexusModel(width: Int, height: Int) {
+data class NexusModel(var width: Int, var height: Int, var colors: List<Int>) {
 
-    val rect = RectF(-width / 2f, -height / 2f, width / 2f, height / 2f)
+    val rect: RectF get() =  RectF(-width / 2f, -height / 2f, width / 2f, height / 2f)
 
     val pulses = (1..10).map { randomPulse() }.toTypedArray()
 
@@ -82,13 +82,13 @@ class NexusModel(width: Int, height: Int) {
         }
     }
 
-    private fun randomX(pulse: Pulse): Float = (rect.left.toInt() ..(rect.right - pulse.rect.width).toInt()).random().toFloat()
-    private fun randomY(pulse: Pulse): Float = (rect.top.toInt() ..(rect.bottom - pulse.rect.height).toInt()).random().toFloat()
+    private fun randomX(pulse: Pulse): Float = (rect.left.toInt() ..(rect.right - pulse.rect.width).toInt()).randomOrNull()?.toFloat() ?: rect.left
+    private fun randomY(pulse: Pulse): Float = (rect.top.toInt() ..(rect.bottom - pulse.rect.height).toInt()).randomOrNull()?.toFloat() ?: rect.top
 
     private fun randomPulse(): Pulse = Pulse(
         width = (300..600).random(),
-        height = (50..100).random(),
-        color = listOf(0xFFFF0000.toInt(), 0xFF00FF00.toInt(), 0xFF0000FF.toInt()).random(),
+        height = (40..80).random(),
+        color = colors.randomOrNull() ?: 0,
         speed = (2..10).random() / 10f, // find a sensible value to use here, should be more dp dependant rather than pixels
         rotation = listOf(Rotation(0f), Rotation(90f), Rotation(180f), Rotation(270f)).random()
     ).also {
