@@ -16,6 +16,7 @@
  */
 package com.xdevl.wallpaper.nexus
 
+import android.graphics.Rect
 import android.graphics.RectF
 import kotlin.math.cos
 import kotlin.math.max
@@ -39,6 +40,18 @@ fun RectF.rotate(rotation: Rotation): RectF {
     val (x1, y1) = rotation.rotate(left, top)
     val (x2, y2) = rotation.rotate(right, bottom)
     return RectF(min(x1, x2), min(y1,y2), max(x1, x2), max(y1, y2))
+}
+
+fun RectF.scale(ratio: Float): RectF {
+    return RectF(left * ratio, top * ratio, right * ratio, bottom * ratio)
+}
+
+fun RectF.translate(x: Float, y: Float): RectF {
+    return RectF(x + left, y + top, x + right, y + bottom)
+}
+
+fun RectF.toRect(): Rect {
+    return Rect(left.toInt(), top.toInt(), right.toInt(), bottom.toInt());
 }
 
 data class Pulse(val width: Int, val height: Int, val color: Int, val speed: Float, val rotation: Rotation) {

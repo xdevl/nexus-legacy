@@ -24,7 +24,9 @@ import android.graphics.LinearGradient
 import android.graphics.Paint
 import android.graphics.RadialGradient
 import android.graphics.Rect
+import android.graphics.RectF
 import android.graphics.Shader
+import android.os.Build
 import android.service.wallpaper.WallpaperService
 import android.util.SizeF
 import android.view.SurfaceHolder
@@ -36,6 +38,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import kotlin.math.max
 import kotlin.math.pow
 import kotlin.math.sqrt
 
@@ -45,18 +48,26 @@ class NexusWallpaper : WallpaperService() {
         ORIGINAL(R.drawable.original_background), ALTERNATIVE(R.drawable.alternative_background)
     }
 
-    private val refreshRateMillis = 40L
-    private lateinit var model: NexusModel
-    private lateinit var holder: SurfaceHolder
-    private lateinit var background: Bitmap
-
+    // Note: the wallpaper service can create several instances of the Engine
     @Override
     override fun onCreateEngine(): Engine = object : Engine() {
 
-        lateinit var renderingScope: CoroutineScope
+        private val refreshRateMillis = 20L
+        private var xOffsetRatio = 0f // 0 is most left, 1 is most right
+        private var yOffsetRatio = 0f // 0 is most top, 1 is most bottom
+        private lateinit var model: NexusModel
+        private lateinit var holder: SurfaceHolder
+        private lateinit var background: Bitmap
+        private lateinit var renderingScope: CoroutineScope
 
-        override fun onCreate(surfaceHolder: SurfaceHolder) {
-            Timber.d("onCreate()")
+
+        override fun onCreate(hodler: SurfaceHolder) {
+            super.onCreate(surfaceHolder)
+            if (Timber.treeCount == 0) {
+                Timber.plant(Timber.DebugTree())
+            }
+
+            Timber.d("onCreate(holder = $surfaceHolder)")
             val preferences = PreferenceManager.getDefaultSharedPreferences(this@NexusWallpaper)
             background = Background.valueOf(preferences.getString(getString(R.string.key_background), getString(R.string.background_value_original))!!).let {
                 BitmapFactory.decodeResource(resources, it.resId)
@@ -73,11 +84,13 @@ class NexusWallpaper : WallpaperService() {
         }
 
         override fun onDestroy() {
+            super.onDestroy()
             Timber.d("onDestroy()")
             renderingScope.cancel()
         }
 
         override fun onVisibilityChanged(visible: Boolean) {
+            super.onVisibilityChanged(visible)
             Timber.d("onVisibilityChanged(visible = $visible)")
             if (visible) {
                 renderingScope = CoroutineScope(Dispatchers.Default).apply {
@@ -93,37 +106,79 @@ class NexusWallpaper : WallpaperService() {
             }
         }
 
-        override fun onSurfaceChanged(holder: SurfaceHolder?, format: Int, width: Int, height: Int) {
-            Timber.d("onSurfaceChanged(format = $format, width = $width, height = $height)")
-            model.width = width
-            model.height = height
+        override fun onSurfaceCreated(holder: SurfaceHolder) {
+            super.onSurfaceCreated(holder)
+            Timber.d("onSurfaceCreated(holder = $holder)")
+            this.holder = holder
+        }
+
+        override fun onSurfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
+            super.onSurfaceChanged(holder, format, width, height)
+            Timber.d("onSurfaceChanged(holder = $holder, format = $format, width = $width, height = $height)")
+            this.holder = holder
         }
 
         override fun onOffsetsChanged(xOffset: Float, yOffset: Float, xOffsetStep: Float, yOffsetStep: Float, xPixelOffset: Int, yPixelOffset: Int) {
+            super.onOffsetsChanged(xOffset, yOffset, xOffsetStep, yOffsetStep, xPixelOffset, yPixelOffset)
             Timber.d("onOffsetsChanged(xOffset = $xOffset, yOffset = $yOffset, xOffsetStep = $xOffsetStep, yOffsetStep = $yOffsetStep, xPixelOffset = $xPixelOffset, yPixelOffset = $yPixelOffset)")
+            xOffsetRatio = xOffset
+            yOffsetRatio = yOffset
+        }
+
+        private fun renderFrame(surfaceHolder: SurfaceHolder) {
+            model.update(refreshRateMillis)
+
+            surfaceHolder.safeLockHardwareCanvas { canvas ->
+
+                model.width = 2 * canvas.width
+                model.height = canvas.height
+
+                val ratio = max(model.width.toFloat() / background.width, model.height.toFloat() / background.height)
+                val bgLeftOffset = (background.width * ratio - model.width) / 2
+                val bgTopOffset = (background.height * ratio - model.height) / 2
+
+                val xOffset = xOffsetRatio * (model.width - canvas.width)
+                val yOffset = yOffsetRatio * (model.height - canvas.height)
+
+                canvas.drawBitmap(
+                    background,
+                    RectF(0f, 0f, canvas.width.toFloat(), canvas.height.toFloat())
+                        .translate(bgLeftOffset + xOffset, bgTopOffset + yOffset)
+                        .scale(1 / ratio)
+                        .toRect(),
+                    Rect(0, 0, canvas.width, canvas.height), null
+                )
+
+                model.pulses.forEach {
+                    canvas.save()
+                    canvas.translate(-xOffset, -yOffset)
+                    canvas.rotate(it.rotation.degrees, model.rect.width / 2f, model.rect.height / 2f)
+
+                    val rect = it.normalizedRect
+                    canvas.drawParticle(
+                        (model.rect.width / 2 + rect.left),
+                        (model.rect.height / 2 + rect.top),
+                        SizeF(rect.width, rect.height),
+                        it.color
+                    )
+                    canvas.restore()
+                }
+            }
         }
     }
 
-    private fun renderFrame(surfaceHolder: SurfaceHolder) {
-        surfaceHolder.lockCanvas().apply {
-            drawBitmap(background, Rect(0, 0, background.width, background.height), Rect(0, 0, width, height), null)
-
-            model.update(refreshRateMillis)
-
-            model.pulses.forEach {
-                save()
-                rotate(it.rotation.degrees, model.rect.width / 2f, model.rect.height / 2f)
-
-                val rect = it.normalizedRect
-                drawParticle(
-                    model.rect.width / 2 + rect.left,
-                    model.rect.height / 2 + rect.top,
-                    SizeF(rect.width, rect.height),
-                    it.color
-                )
-                restore()
+    private fun SurfaceHolder.safeLockHardwareCanvas(block: (Canvas) -> Unit) {
+        if (surface.isValid) {
+            val canvas = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                lockHardwareCanvas()
+            } else {
+                lockCanvas()
             }
-            surfaceHolder.unlockCanvasAndPost(this)
+            try {
+                block(canvas)
+            } finally {
+                unlockCanvasAndPost(canvas)
+            }
         }
     }
 
