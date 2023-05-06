@@ -27,7 +27,8 @@
 
     <application
         android:label="@string/wallpapers"
-        android:icon="@drawable/ic_launcher_wallpaper">
+        android:icon="@drawable/ic_launcher_wallpaper"
+        android:theme="@style/AppTheme">
         
         <service
             android:label="@string/wallpaper_nexus"
@@ -42,7 +43,7 @@
         
         <activity
             android:label="@string/settings"
-            android:name="com.xdevl.wallpaper.nexus.NexusSettings"
+            android:name="com.xdevl.wallpaper.nexus.NexusSettingsActivity"
             android:exported="true">
         </activity>
 

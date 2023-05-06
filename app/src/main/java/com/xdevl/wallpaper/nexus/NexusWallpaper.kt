@@ -35,9 +35,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.math.max
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -52,13 +54,14 @@ class NexusWallpaper : WallpaperService() {
     @Override
     override fun onCreateEngine(): Engine = object : Engine() {
 
+        private val preferences = NexusPreferences(this@NexusWallpaper)
         private val refreshRateMillis = 20L
         private var xOffsetRatio = 0f // 0 is most left, 1 is most right
         private var yOffsetRatio = 0f // 0 is most top, 1 is most bottom
         private lateinit var model: NexusModel
         private lateinit var holder: SurfaceHolder
-        private lateinit var background: Bitmap
-        private lateinit var renderingScope: CoroutineScope
+        private var background: Bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
+        private var renderingScope = CoroutineScope(EmptyCoroutineContext)
 
 
         override fun onCreate(hodler: SurfaceHolder) {
@@ -68,16 +71,7 @@ class NexusWallpaper : WallpaperService() {
             }
 
             Timber.d("onCreate(holder = $surfaceHolder)")
-            val preferences = PreferenceManager.getDefaultSharedPreferences(this@NexusWallpaper)
-            background = Background.valueOf(preferences.getString(getString(R.string.key_background), getString(R.string.background_value_original))!!).let {
-                BitmapFactory.decodeResource(resources, it.resId)
-            }
-
-            val colors = (preferences.getStringSet(getString(R.string.key_colors), null) ?: setOf(*resources.getStringArray(R.array.default_colors))).map {
-                Color.parseColor(it).withAlpha(0x88)
-            }
-
-            model = NexusModel(0, 0, colors)
+            model = NexusModel(0, 0, listOf(0))
 
             surfaceHolder.setSizeFromLayout()
             holder = surfaceHolder
@@ -94,6 +88,12 @@ class NexusWallpaper : WallpaperService() {
             Timber.d("onVisibilityChanged(visible = $visible)")
             if (visible) {
                 renderingScope = CoroutineScope(Dispatchers.Default).apply {
+                    launch {
+                        preferences.nexusSettingsFlow.collect {
+                            background = BitmapFactory.decodeResource(resources, Background.valueOf(it.background).resId)
+                            model.colors = it.colors.toList()
+                        }
+                    }
                     launch {
                         while (isActive) {
                             renderFrame(holder)
@@ -220,8 +220,6 @@ class NexusWallpaper : WallpaperService() {
             )
         })
     }
-
-    private fun Int.withAlpha(alpha: Int): Int = and(0xFFFFFF).or(alpha.shl(24))
 }
 
 
