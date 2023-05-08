@@ -64,7 +64,7 @@ data class Pulse(val width: Int, val height: Int, val color: Int, val speed: Flo
     val rect: RectF get() = normalizedRect.rotate(rotation)
 
     fun update(elapsedMillis: Long) {
-        normalizedX += speed * elapsedMillis.toInt()
+        normalizedX += speed * elapsedMillis / 1000f
     }
 
     fun intersects(rect: RectF): Boolean {
@@ -79,7 +79,7 @@ data class Pulse(val width: Int, val height: Int, val color: Int, val speed: Flo
     }
 }
 
-data class NexusModel(var width: Int, var height: Int, var colors: List<Int>) {
+data class NexusModel(var width: Int, var height: Int, var settings: NexusPreferences.NexusSettings) {
 
     val rect: RectF get() =  RectF(-width / 2f, -height / 2f, width / 2f, height / 2f)
 
@@ -99,10 +99,13 @@ data class NexusModel(var width: Int, var height: Int, var colors: List<Int>) {
     private fun randomY(pulse: Pulse): Float = (rect.top.toInt() ..(rect.bottom - pulse.rect.height).toInt()).randomOrNull()?.toFloat() ?: rect.top
 
     private fun randomPulse(): Pulse = Pulse(
-        width = (300..600).random(),
-        height = (40..80).random(),
-        color = colors.randomOrNull() ?: 0,
-        speed = (2..10).random() / 10f, // find a sensible value to use here, should be more dp dependant rather than pixels
+        width = settings.particlePixelWidthRange.random(),
+        height =settings.particlePixelHeightRange.random(),
+        // Until we've got dimensions set we make the particles "invisible" to avoid seeing the first ones
+        // all starting from the same (0, 0) position, this way particles also start to appear randomly rather
+        // than all at once
+        color = settings.colors.randomOrNull().takeIf { width != 0 && height != 0 } ?: 0,
+        speed = (settings.particlePixelSpeedRange).random().toFloat(), // find a sensible value to use here, should be more dp dependant rather than pixels
         rotation = listOf(Rotation(0f), Rotation(90f), Rotation(180f), Rotation(270f)).random()
     ).also {
         when (it.rotation.degrees) {

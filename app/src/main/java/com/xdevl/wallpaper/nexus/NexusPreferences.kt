@@ -12,7 +12,10 @@ class NexusPreferences(private val context: Context) {
 
     data class NexusSettings(
         val background: String,
-        val colors: Collection<Int>
+        val colors: Collection<Int>,
+        val particlePixelWidthRange: IntRange,
+        val particlePixelHeightRange: IntRange,
+        val particlePixelSpeedRange: IntRange
     )
 
     private val prefs = PreferenceManager.getDefaultSharedPreferences(context)
@@ -25,7 +28,11 @@ class NexusPreferences(private val context: Context) {
         Color.parseColor(it).withAlpha(0x88)
     }
 
-    val nexusSettings: NexusSettings get() = NexusSettings(background, colors)
+    val nexusSettings: NexusSettings get() = NexusSettings(background, colors,
+        context.resources.getDimensionPixelSize(R.dimen.min_particle_width)..context.resources.getDimensionPixelSize(R.dimen.max_particle_width),
+        context.resources.getDimensionPixelSize(R.dimen.min_particle_height)..context.resources.getDimensionPixelSize(R.dimen.max_particle_height),
+        context.resources.getDimensionPixelSize(R.dimen.min_particle_speed)..context.resources.getDimensionPixelSize(R.dimen.max_particle_speed)
+    )
 
     val nexusSettingsFlow: Flow<NexusSettings> get() = callbackFlow {
         val listener = OnSharedPreferenceChangeListener { _, _ -> trySendBlocking(nexusSettings) }

@@ -19,7 +19,6 @@ package com.xdevl.wallpaper.nexus
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.LinearGradient
 import android.graphics.Paint
 import android.graphics.RadialGradient
@@ -30,12 +29,10 @@ import android.os.Build
 import android.service.wallpaper.WallpaperService
 import android.util.SizeF
 import android.view.SurfaceHolder
-import androidx.preference.PreferenceManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -71,7 +68,7 @@ class NexusWallpaper : WallpaperService() {
             }
 
             Timber.d("onCreate(holder = $surfaceHolder)")
-            model = NexusModel(0, 0, listOf(0))
+            model = NexusModel(0, 0, preferences.nexusSettings)
 
             surfaceHolder.setSizeFromLayout()
             holder = surfaceHolder
@@ -91,7 +88,7 @@ class NexusWallpaper : WallpaperService() {
                     launch {
                         preferences.nexusSettingsFlow.collect {
                             background = BitmapFactory.decodeResource(resources, Background.valueOf(it.background).resId)
-                            model.colors = it.colors.toList()
+                            model.settings = it
                         }
                     }
                     launch {

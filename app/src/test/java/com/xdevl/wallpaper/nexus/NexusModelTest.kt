@@ -1,6 +1,7 @@
 package com.xdevl.wallpaper.nexus
 
 import android.graphics.RectF
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
@@ -9,6 +10,8 @@ import kotlin.math.roundToInt
 
 @RunWith(AndroidJUnit4::class)
 class NexusModelTest {
+
+    private val preferences = NexusPreferences(ApplicationProvider.getApplicationContext())
 
     @Test
     fun testRect90Rotation() {
@@ -48,17 +51,26 @@ class NexusModelTest {
 
     @Test
     fun testAllPulseAreVisible() {
-        val model = NexusModel(1000, 400, emptyList())
+        val model = NexusModel(1000, 400, preferences.nexusSettings)
         val existingPulses = model.pulses.toSet()
 
-        model.update(10)
+        model.update(1000)
 
         assertThat(model.pulses.toSet()).isEqualTo(existingPulses)
     }
 
     @Test
+    fun testAllPulseAreTransparentWhenDimensionsArentSet() {
+        val model = NexusModel(0, 0, preferences.nexusSettings)
+
+        model.update(1000)
+
+        assertThat(model.pulses.find { it.color != 0 }).isNull()
+    }
+
+    @Test
     fun testLeftToRightPulse() {
-        val model = NexusModel(1000, 400, emptyList())
+        val model = NexusModel(1000, 400, preferences.nexusSettings)
         val pulse = Pulse(400, 600, 0xFF00FF, 1f, Rotation(0f)).apply {
             setPosition(model.rect.left - width + 1, 0f)
         }
@@ -66,7 +78,7 @@ class NexusModelTest {
 
         val startPosition = pulse.rect.left
         for (i in 1 until (model.rect.width + pulse.rect.width).roundToInt()) {
-            model.update(1)
+            model.update(1000)
             pulse.assertPulsePosition(startPosition + i, 0f)
         }
 
@@ -76,7 +88,7 @@ class NexusModelTest {
 
     @Test
     fun testRightToLeftPulse() {
-        val model = NexusModel(1000, 400, emptyList())
+        val model = NexusModel(1000, 400, preferences.nexusSettings)
         val pulse = Pulse(400, 600, 0xFF00FF, 1f, Rotation(180f)).apply {
             setPosition(model.rect.right - 1, 0f)
         }
@@ -84,7 +96,7 @@ class NexusModelTest {
 
         val startPosition = pulse.rect.left
         for (i in 1 until (model.rect.width + pulse.rect.width).roundToInt()) {
-            model.update(1)
+            model.update(1000)
             pulse.assertPulsePosition(startPosition - i, 0f)
         }
 
@@ -94,7 +106,7 @@ class NexusModelTest {
 
     @Test
     fun testTopToBottomPulse() {
-        val model = NexusModel(1000, 400, emptyList())
+        val model = NexusModel(1000, 400, preferences.nexusSettings)
         val pulse = Pulse(400, 600, 0xFF00FF, 1f, Rotation(90f)).apply {
             setPosition(0f, model.rect.top - width + 1)
         }
@@ -103,7 +115,7 @@ class NexusModelTest {
 
         val startPosition = pulse.rect.top
         for (i in 1 until (model.rect.height + pulse.rect.height).roundToInt()) {
-            model.update(1)
+            model.update(1000)
             pulse.assertPulsePosition(0f, startPosition + i)
         }
 
@@ -113,7 +125,7 @@ class NexusModelTest {
 
     @Test
     fun testBottomToTopPulse() {
-        val model = NexusModel(1000, 400, emptyList())
+        val model = NexusModel(1000, 400, preferences.nexusSettings)
         val pulse = Pulse(400, 600, 0xFF00FF, 1f, Rotation(270f)).apply {
             setPosition(0f, model.rect.bottom - 1)
         }
@@ -121,7 +133,7 @@ class NexusModelTest {
 
         val startPosition = pulse.rect.top
         for (i in 1 until (model.rect.height + pulse.rect.height).roundToInt()) {
-            model.update(1)
+            model.update(1000)
             pulse.assertPulsePosition(0f, startPosition - i)
         }
 
