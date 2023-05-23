@@ -7,8 +7,9 @@ android {
         applicationId "com.xdevl.wallpaper.nexus"
         minSdkVersion 23
         targetSdkVersion 32
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "2.0"
+        setProperty("archivesBaseName", "NexusLegacy-$versionName")
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -24,6 +25,12 @@ android {
 
     testOptions.unitTests.includeAndroidResources true
 }
+
+/** project.androidComponents {
+    beforeVariants({ variant ->
+        println("Called with variant : ${variant}name")
+    })
+} **/
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
