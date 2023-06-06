@@ -31,6 +31,8 @@ import androidx.preference.PreferenceFragmentCompat
 class NexusSettingsActivity : AppCompatActivity() {
     class NexusPreference : PreferenceFragmentCompat() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+            preferenceManager.sharedPreferencesName = NexusPreferences.PREFERENCES_NAME
+            preferenceManager.setStorageDeviceProtected()
             addPreferencesFromResource(R.xml.preference_nexus)
         }
 

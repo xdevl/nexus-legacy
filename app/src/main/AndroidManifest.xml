@@ -17,7 +17,7 @@
 ** limitations under the License.
 */
 -->
-<manifest
+<manifest xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android">
     
     <uses-feature android:name="android.software.live_wallpaper" />
@@ -31,7 +31,9 @@
             android:label="@string/wallpaper_nexus"
             android:name="com.xdevl.wallpaper.nexus.NexusWallpaper"
             android:permission="android.permission.BIND_WALLPAPER"
-            android:exported="true">
+            android:exported="true"
+            android:directBootAware="true"
+            tools:targetApi="n">
             <intent-filter>
                 <action android:name="android.service.wallpaper.WallpaperService" />
             </intent-filter>
