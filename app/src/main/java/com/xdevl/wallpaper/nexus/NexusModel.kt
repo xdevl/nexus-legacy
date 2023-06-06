@@ -22,6 +22,7 @@ import kotlin.math.cos
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.sin
+import kotlin.random.Random
 
 data class Rotation(val degrees: Float) {
 
@@ -98,21 +99,28 @@ data class NexusModel(var width: Int, var height: Int, var settings: NexusPrefer
     private fun randomX(pulse: Pulse): Float = (rect.left.toInt() ..(rect.right - pulse.rect.width).toInt()).randomOrNull()?.toFloat() ?: rect.left
     private fun randomY(pulse: Pulse): Float = (rect.top.toInt() ..(rect.bottom - pulse.rect.height).toInt()).randomOrNull()?.toFloat() ?: rect.top
 
-    private fun randomPulse(): Pulse = Pulse(
-        width = settings.particlePixelWidthRange.random(),
-        height =settings.particlePixelHeightRange.random(),
-        // Until we've got dimensions set we make the particles "invisible" to avoid seeing the first ones
-        // all starting from the same (0, 0) position, this way particles also start to appear randomly rather
-        // than all at once
-        color = settings.colors.randomOrNull().takeIf { width != 0 && height != 0 } ?: 0,
-        speed = (settings.particlePixelSpeedRange).random().toFloat(), // find a sensible value to use here, should be more dp dependant rather than pixels
-        rotation = listOf(Rotation(0f), Rotation(90f), Rotation(180f), Rotation(270f)).random()
-    ).also {
-        when (it.rotation.degrees) {
-            270f -> it.setPosition(randomX(it), rect.bottom - 1)
-            180f -> it.setPosition(rect.right - 1, randomY(it))
-            90f -> it.setPosition(randomX(it), rect.top + 1 - it.rect.height)
-            else -> it.setPosition(rect.left + 1 - it.rect.width, randomY(it))
+    private fun randomPulse(): Pulse {
+        val bias = Random.nextFloat()
+        return Pulse(
+            width = settings.particlePixelWidthRange.valueFromBias(bias),
+            height = settings.particlePixelHeightRange.random(),
+            // Until we've got dimensions set we make the particles "invisible" to avoid seeing the first ones
+            // all starting from the same (0, 0) position, this way particles also start to appear randomly rather
+            // than all at once
+            color = settings.colors.randomOrNull().takeIf { width != 0 && height != 0 } ?: 0,
+            speed = settings.particlePixelSpeedRange.valueFromBias(bias).toFloat(),
+            rotation = listOf(Rotation(0f), Rotation(90f), Rotation(180f), Rotation(270f)).random()
+        ).also {
+            when (it.rotation.degrees) {
+                270f -> it.setPosition(randomX(it), rect.bottom - 1)
+                180f -> it.setPosition(rect.right - 1, randomY(it))
+                90f -> it.setPosition(randomX(it), rect.top + 1 - it.rect.height)
+                else -> it.setPosition(rect.left + 1 - it.rect.width, randomY(it))
+            }
         }
+    }
+
+    private fun IntRange.valueFromBias(bias: Float): Int {
+        return (first + (last - first) * bias).toInt()
     }
 }

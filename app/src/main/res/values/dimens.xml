@@ -2,9 +2,9 @@
     <dimen name="fragment_horizontal_margin">16dp</dimen>
     <dimen name="fragment_vertical_margin">16dp</dimen>
     <dimen name="min_particle_width">100dp</dimen>
-    <dimen name="max_particle_width">250dp</dimen>
+    <dimen name="max_particle_width">200dp</dimen>
     <dimen name="min_particle_height">15dp</dimen>
-    <dimen name="max_particle_height">30dp</dimen>
+    <dimen name="max_particle_height">25dp</dimen>
     <!-- Speed is defined in dp per seconds -->
     <dimen name="min_particle_speed">50dp</dimen>
     <dimen name="max_particle_speed">200dp</dimen>
