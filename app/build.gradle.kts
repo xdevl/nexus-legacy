@@ -5,7 +5,6 @@ plugins {
 }
 
 android {
-    project.ext
     namespace = "com.xdevl.wallpaper.nexus"
     compileSdk = 32
     defaultConfig {
@@ -28,6 +27,10 @@ android {
     }
 
     testOptions.unitTests.isIncludeAndroidResources = true
+
+    buildFeatures {
+        buildConfig = true
+    }
 }
 
 dependencies {

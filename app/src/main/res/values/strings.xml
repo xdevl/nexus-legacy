@@ -77,7 +77,7 @@
         the <a href="https://source.android.com/">Android Open Source Project</a>
         licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">apache 2.0 licence</a>
     </string>
-    <string name="nexus_about">Nexus Legacy v1.0</string>
-    <string name="xdevl_about">Copyright &#169; 2014 All rights reserved. XdevL</string>
+    <string name="nexus_about">Nexus Legacy v%1$s</string>
+    <string name="xdevl_about">Copyright &#169; %1$d All rights reserved. XdevL</string>
     
 </resources>

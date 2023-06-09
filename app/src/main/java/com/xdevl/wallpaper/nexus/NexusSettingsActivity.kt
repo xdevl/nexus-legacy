@@ -27,6 +27,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import java.util.Calendar
 
 class NexusSettingsActivity : AppCompatActivity() {
     class NexusPreference : PreferenceFragmentCompat() {
@@ -48,6 +49,8 @@ class NexusSettingsActivity : AppCompatActivity() {
         override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
             return inflater.inflate(R.layout.fragment_about, container, false).apply {
                 findViewById<TextView>(R.id.aosp_about).movementMethod = LinkMovementMethod.getInstance()
+                findViewById<TextView>(R.id.nexus_about).text = getString(R.string.nexus_about, BuildConfig.VERSION_NAME)
+                findViewById<TextView>(R.id.xdevl_about).text = getString(R.string.xdevl_about, Calendar.getInstance().get(Calendar.YEAR))
             }
         }
     }
