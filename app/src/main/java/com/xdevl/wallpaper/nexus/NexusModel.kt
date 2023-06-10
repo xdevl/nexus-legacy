@@ -84,7 +84,7 @@ data class NexusModel(var width: Int, var height: Int, var settings: NexusPrefer
 
     val rect: RectF get() =  RectF(-width / 2f, -height / 2f, width / 2f, height / 2f)
 
-    val pulses = (1..10).map { randomPulse() }.toTypedArray()
+    val pulses by lazy { (1..10).map { randomPulse() }.toTypedArray() }
 
     fun update(elapsedMillis: Long) {
         pulses.forEachIndexed { index, pulse ->
@@ -104,10 +104,7 @@ data class NexusModel(var width: Int, var height: Int, var settings: NexusPrefer
         return Pulse(
             width = settings.particlePixelWidthRange.valueFromBias(bias),
             height = settings.particlePixelHeightRange.random(),
-            // Until we've got dimensions set we make the particles "invisible" to avoid seeing the first ones
-            // all starting from the same (0, 0) position, this way particles also start to appear randomly rather
-            // than all at once
-            color = settings.colors.randomOrNull().takeIf { width != 0 && height != 0 } ?: 0,
+            color = settings.colors.randomOrNull() ?: 0,
             speed = settings.particlePixelSpeedRange.valueFromBias(bias).toFloat(),
             rotation = listOf(Rotation(0f), Rotation(90f), Rotation(180f), Rotation(270f)).random()
         ).also {

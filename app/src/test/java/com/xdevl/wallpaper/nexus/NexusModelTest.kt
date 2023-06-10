@@ -60,15 +60,6 @@ class NexusModelTest {
     }
 
     @Test
-    fun testAllPulseAreTransparentWhenDimensionsArentSet() {
-        val model = NexusModel(0, 0, preferences.nexusSettings)
-
-        model.update(1000)
-
-        assertThat(model.pulses.find { it.color != 0 }).isNull()
-    }
-
-    @Test
     fun testLeftToRightPulse() {
         val model = NexusModel(1000, 400, preferences.nexusSettings)
         val pulse = Pulse(400, 600, 0xFF00FF, 1f, Rotation(0f)).apply {

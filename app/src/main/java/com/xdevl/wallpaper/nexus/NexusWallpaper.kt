@@ -123,12 +123,12 @@ class NexusWallpaper : WallpaperService() {
         }
 
         private fun renderFrame(surfaceHolder: SurfaceHolder) {
-            model.update(refreshRateMillis)
-
             surfaceHolder.safeLockHardwareCanvas { canvas ->
 
                 model.width = 2 * canvas.width
                 model.height = canvas.height
+
+                model.update(refreshRateMillis)
 
                 val ratio = max(model.width.toFloat() / background.width, model.height.toFloat() / background.height)
                 val bgLeftOffset = (background.width * ratio - model.width) / 2
