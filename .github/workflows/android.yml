@@ -19,7 +19,14 @@ jobs:
       - name: Build and test
         run: ./gradlew test assembleRelease
 
-      - name: Uploading artifacts
+      - name: Uploading mapping files
+        uses: actions/upload-artifact@v3
+        with:
+          name: mappings
+          path: ${{ github.workspace }}/**/build/outputs/mapping/*
+          if-no-files-found: error
+
+      - name: Uploading APKs
         uses: actions/upload-artifact@v3
         with:
           name: apks

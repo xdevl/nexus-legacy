@@ -8,7 +8,7 @@ android {
     namespace = "com.xdevl.wallpaper.nexus"
     compileSdk = 32
     defaultConfig {
-        minSdk = 23
+        minSdk = 22
         targetSdk = 32
         versionCode = 2
         versionName = "2.0"
@@ -18,6 +18,7 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android.txt"))
         }
     }
