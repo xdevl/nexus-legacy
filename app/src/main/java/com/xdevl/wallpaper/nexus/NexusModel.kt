@@ -82,16 +82,47 @@ data class Pulse(val width: Int, val height: Int, val color: Int, val speed: Flo
 
 data class NexusModel(var width: Int, var height: Int, var settings: NexusPreferences.NexusSettings) {
 
+    companion object {
+        private const val MAX_SIMULTANEOUS_EXTRA_CALLS = 5
+        private val PULSE_COUNT_RANGE = 10.let { it until (it + MAX_SIMULTANEOUS_EXTRA_CALLS * 4) }
+    }
+
     val rect: RectF get() =  RectF(-width / 2f, -height / 2f, width / 2f, height / 2f)
 
-    val pulses by lazy { (1..10).map { randomPulse() }.toTypedArray() }
+
+    private val extraPulsesIndexes = PULSE_COUNT_RANGE.map { it }.toMutableSet()
+    val pulses by lazy {
+        ((0 until PULSE_COUNT_RANGE.first).map { createPulse() } + PULSE_COUNT_RANGE.map { createPulse(color = 0) }).toTypedArray()
+    }
 
     fun update(elapsedMillis: Long) {
         pulses.forEachIndexed { index, pulse ->
             if (!pulse.intersects(rect)) {
-                pulses[index] = randomPulse()
+                if (index in PULSE_COUNT_RANGE) {
+                    extraPulsesIndexes.add(index)
+                } else {
+                    pulses[index] = createPulse()
+                }
             } else {
                 pulse.update(elapsedMillis)
+            }
+        }
+    }
+
+    fun createExtraPulsesAt(x: Float, y: Float) {
+        if (extraPulsesIndexes.size > 3) {
+            (0..3).forEach {
+                extraPulsesIndexes.first().also { index ->
+                    pulses[index] = createPulse(rotation = Rotation((90f * it) % 360f)).also { pulse ->
+                        // We want all the pulse's heads to start from the same coordinates
+                        when (pulse.rotation.degrees) {
+                            0f -> pulse.setPosition(x - pulse.width, y)
+                            90f -> pulse.setPosition(x, y - pulse.width)
+                            else -> pulse.setPosition(x, y)
+                        }
+                    }
+                    extraPulsesIndexes.remove(index)
+                }
             }
         }
     }
@@ -99,14 +130,14 @@ data class NexusModel(var width: Int, var height: Int, var settings: NexusPrefer
     private fun randomX(pulse: Pulse): Float = (rect.left.toInt() ..(rect.right - pulse.rect.width).toInt()).randomOrNull()?.toFloat() ?: rect.left
     private fun randomY(pulse: Pulse): Float = (rect.top.toInt() ..(rect.bottom - pulse.rect.height).toInt()).randomOrNull()?.toFloat() ?: rect.top
 
-    private fun randomPulse(): Pulse {
+    private fun createPulse(width: Int? = null, height: Int? = null, color: Int? = null, speed: Float? = null, rotation: Rotation? = null): Pulse {
         val bias = Random.nextFloat()
         return Pulse(
-            width = settings.particlePixelWidthRange.valueFromBias(bias),
-            height = settings.particlePixelHeightRange.random(),
-            color = settings.colors.randomOrNull() ?: 0,
-            speed = settings.particlePixelSpeedRange.valueFromBias(bias).toFloat(),
-            rotation = listOf(Rotation(0f), Rotation(90f), Rotation(180f), Rotation(270f)).random()
+            width = width ?: settings.particlePixelWidthRange.valueFromBias(bias),
+            height = height ?: settings.particlePixelHeightRange.random(),
+            color = color ?: settings.colors.randomOrNull() ?: 0,
+            speed = speed ?: settings.particlePixelSpeedRange.valueFromBias(bias).toFloat(),
+            rotation = rotation ?: listOf(Rotation(0f), Rotation(90f), Rotation(180f), Rotation(270f)).random()
         ).also {
             when (it.rotation.degrees) {
                 270f -> it.setPosition(randomX(it), rect.bottom - 1)

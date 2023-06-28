@@ -28,6 +28,7 @@ import android.graphics.Shader
 import android.os.Build
 import android.service.wallpaper.WallpaperService
 import android.util.SizeF
+import android.view.MotionEvent
 import android.view.SurfaceHolder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -120,6 +121,13 @@ class NexusWallpaper : WallpaperService() {
             Timber.d("onOffsetsChanged(xOffset = $xOffset, yOffset = $yOffset, xOffsetStep = $xOffsetStep, yOffsetStep = $yOffsetStep, xPixelOffset = $xPixelOffset, yPixelOffset = $yPixelOffset)")
             xOffsetRatio = xOffset
             yOffsetRatio = yOffset
+        }
+
+        override fun onTouchEvent(event: MotionEvent?) {
+            super.onTouchEvent(event)
+            event.takeIf { it?.action == MotionEvent.ACTION_DOWN }?.also {
+                model.createExtraPulsesAt(it.x - model.width / 2f, it.y - model.height / 2f)
+            }
         }
 
         private fun renderFrame(surfaceHolder: SurfaceHolder) {
