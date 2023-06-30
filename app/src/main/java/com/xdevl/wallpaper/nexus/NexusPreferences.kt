@@ -69,7 +69,7 @@ class NexusPreferences(private val context: Context) {
 
     val nexusSettingsFlow: Flow<NexusSettings>
         get() = callbackFlow {
-            val listener = OnSharedPreferenceChangeListener { _, _ -> trySendBlocking(nexusSettings) }
+            val listener = OnSharedPreferenceChangeListener { _, _ -> trySend(nexusSettings) }
             prefs.registerOnSharedPreferenceChangeListener(listener)
             trySendBlocking(nexusSettings)
             awaitClose {

@@ -64,7 +64,7 @@ class NexusWallpaper : WallpaperService() {
 
         override fun onCreate(hodler: SurfaceHolder) {
             super.onCreate(surfaceHolder)
-            if (Timber.treeCount == 0) {
+            if (BuildConfig.DEBUG && Timber.treeCount == 0) {
                 Timber.plant(Timber.DebugTree())
             }
 
@@ -85,7 +85,7 @@ class NexusWallpaper : WallpaperService() {
             super.onVisibilityChanged(visible)
             Timber.d("onVisibilityChanged(visible = $visible)")
             if (visible) {
-                renderingScope = CoroutineScope(Dispatchers.Default).apply {
+                renderingScope = CoroutineScope(Dispatchers.Default.limitedParallelism(1)).apply {
                     launch {
                         preferences.nexusSettingsFlow.collect {
                             background = BitmapFactory.decodeResource(resources, Background.valueOf(it.background).resId)
@@ -126,7 +126,9 @@ class NexusWallpaper : WallpaperService() {
         override fun onTouchEvent(event: MotionEvent?) {
             super.onTouchEvent(event)
             event.takeIf { it?.action == MotionEvent.ACTION_DOWN }?.also {
-                model.createExtraPulsesAt(it.x - model.width / 2f, it.y - model.height / 2f)
+                renderingScope.launch {
+                    model.createExtraPulsesAt(it.x - model.width / 2f, it.y - model.height / 2f)
+                }
             }
         }
 
@@ -174,15 +176,16 @@ class NexusWallpaper : WallpaperService() {
 
     private fun SurfaceHolder.safeLockHardwareCanvas(block: (Canvas) -> Unit) {
         if (surface.isValid) {
-            val canvas = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 lockHardwareCanvas()
             } else {
                 lockCanvas()
-            }
-            try {
-                block(canvas)
-            } finally {
-                unlockCanvasAndPost(canvas)
+            }?.also {
+                try {
+                    block(it)
+                } finally {
+                    unlockCanvasAndPost(it)
+                }
             }
         }
     }

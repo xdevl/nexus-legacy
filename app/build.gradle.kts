@@ -10,8 +10,8 @@ android {
     defaultConfig {
         minSdk = 22
         targetSdk = 32
-        versionCode = 2
-        versionName = "2.0"
+        versionCode = 3
+        versionName = "2.1"
         setProperty("archivesBaseName", "NexusLegacy-$versionName")
         testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -35,7 +35,7 @@ android {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.2")
     implementation("androidx.preference:preference-ktx:1.2.0")
     implementation("com.jakewharton.timber:timber:5.0.1")
 
