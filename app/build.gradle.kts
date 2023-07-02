@@ -10,8 +10,8 @@ android {
     defaultConfig {
         minSdk = 22
         targetSdk = 32
-        versionCode = 3
-        versionName = "2.1"
+        versionCode = 4
+        versionName = "2.1.1"
         setProperty("archivesBaseName", "NexusLegacy-$versionName")
         testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
     }

@@ -28,8 +28,10 @@ import android.graphics.Shader
 import android.os.Build
 import android.service.wallpaper.WallpaperService
 import android.util.SizeF
+import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.SurfaceHolder
+import androidx.core.view.GestureDetectorCompat
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -43,6 +45,12 @@ import kotlin.math.pow
 import kotlin.math.sqrt
 
 class NexusWallpaper : WallpaperService() {
+
+    companion object {
+        // Define scaling of the wallpaper based on the device screen size
+        const val WALLPAPER_HSCALE = 2
+        const val WALLPAPER_VSCALE = 1
+    }
 
     enum class Background(val resId: Int) {
         ORIGINAL(R.drawable.original_background), ALTERNATIVE(R.drawable.alternative_background)
@@ -58,6 +66,7 @@ class NexusWallpaper : WallpaperService() {
         private var yOffsetRatio = 0f // 0 is most top, 1 is most bottom
         private lateinit var model: NexusModel
         private lateinit var holder: SurfaceHolder
+        private lateinit var gestureDetector: GestureDetectorCompat
         private var background: Bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
         private var renderingScope = CoroutineScope(EmptyCoroutineContext)
 
@@ -73,6 +82,24 @@ class NexusWallpaper : WallpaperService() {
 
             surfaceHolder.setSizeFromLayout()
             holder = surfaceHolder
+            gestureDetector = GestureDetectorCompat(this@NexusWallpaper, object : GestureDetector.OnGestureListener {
+                override fun onDown(p0: MotionEvent?): Boolean = false
+                override fun onShowPress(p0: MotionEvent?) = Unit
+                override fun onSingleTapUp(event: MotionEvent?): Boolean {
+                    return event?.let {
+                        renderingScope.launch {
+                            model.createExtraPulsesAt(
+                                xOffsetRatio * model.width * (1 - 1f / WALLPAPER_HSCALE) +  it.x - model.width / 2f,
+                                yOffsetRatio * model.height * (1 - 1f / WALLPAPER_VSCALE) + it.y - model.height / 2f
+                            )
+                        }
+                        true
+                    } ?: false
+                }
+                override fun onScroll(p0: MotionEvent?, p1: MotionEvent?, p2: Float, p3: Float): Boolean = false
+                override fun onLongPress(p0: MotionEvent?) = Unit
+                override fun onFling(p0: MotionEvent?, p1: MotionEvent?, p2: Float, p3: Float): Boolean = false
+            })
         }
 
         override fun onDestroy() {
@@ -125,18 +152,14 @@ class NexusWallpaper : WallpaperService() {
 
         override fun onTouchEvent(event: MotionEvent?) {
             super.onTouchEvent(event)
-            event.takeIf { it?.action == MotionEvent.ACTION_DOWN }?.also {
-                renderingScope.launch {
-                    model.createExtraPulsesAt(it.x - model.width / 2f, it.y - model.height / 2f)
-                }
-            }
+            gestureDetector.onTouchEvent(event)
         }
 
         private fun renderFrame(surfaceHolder: SurfaceHolder) {
             surfaceHolder.safeLockHardwareCanvas { canvas ->
 
-                model.width = 2 * canvas.width
-                model.height = canvas.height
+                model.width =  canvas.width * WALLPAPER_HSCALE
+                model.height = canvas.height * WALLPAPER_VSCALE
 
                 model.update(refreshRateMillis)
 
